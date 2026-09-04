@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/app.svg</file>
+        <file>icons/check.svg</file>
+        <file>icons/veyo-logo.png</file>
+    </qresource>
+</RCC>
