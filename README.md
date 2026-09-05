@@ -9,6 +9,7 @@ Portable single-file Windows updater powered by `winget`. No installation, no ba
 - **Automatic check** — lists every package with an available `winget upgrade`, using a robust fixed-width table parser (handles long names like `Eclipse Temurin JDK…`, BOM, `\r\n`)
 - **Per-app Update buttons** — Store-style rows: icon, name, `id • current → available`
 - **Batch updates** — Update selected / Update all
+- **Settings** — download timer (auto-start countdown), auto-check interval, and finish action (nothing / close app / shut down PC); stored portably in `VeyoUpdater.ini` next to the exe
 - **Always elevated** — every upgrade runs via UAC (`runas`); cancelling shows a clear message instead of failing silently
 - **Live progress** — stage (`Preparing → Downloading → Installing → Done`) + smooth percent bar + per-app counter, parsed live from the winget log
 - **Animations** — fade in/out, staggered row entrance, loading spinner around the logo, fading buttons

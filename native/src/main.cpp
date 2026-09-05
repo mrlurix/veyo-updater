@@ -11,6 +11,7 @@
 #include <uxtheme.h>
 #include <windowsx.h>
 #include <shellapi.h>
+#include "../resources/resource.h"
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -19,6 +20,7 @@
 #include <iomanip>
 #include <regex>
 #include <cmath>
+#include <stdlib.h>
 
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "dwmapi.lib")
@@ -97,7 +99,7 @@ struct Package {
     bool checked = true;
 };
 
-HWND hMain, hList, hRefresh, hUpgradeAll, hUpgradeSel, hStatus, hProgress, hCount;
+HWND hMain, hList, hRefresh, hUpgradeAll, hUpgradeSel, hStatus, hProgress, hCount, hSettings;
 HICON hAppIcon = nullptr;
 static void FitLastColumn();
 struct JobItem { std::wstring id, name; };
@@ -116,7 +118,7 @@ static int g_pendingRows = 0; // cascade insert progress
 static int g_spinAngle = 0; // loading spinner angle
 static HIMAGELIST g_hRowImg = nullptr; // forces tall Store-like rows
 struct BtnAnim { HWND hw = nullptr; float v = 0, target = 0; }; // v: 0 normal, 1 hover, 2 pressed
-static BtnAnim g_btns[3];
+static BtnAnim g_btns[4];
 static int g_rowBtnRow = -1; // list row whose Update button is fading
 static float g_rowBtnV = 0, g_rowBtnTarget = 0;
 
@@ -304,30 +306,45 @@ void SetLoading(bool b){
         if(g_packages.empty()) SetWindowTextW(hStatus,L"All apps are up to date");
         else { wchar_t t[64]; swprintf_s(t,L"%d updates available",(int)g_packages.size()); SetWindowTextW(hStatus,t); }
     }
-    if(b){ SendMessage(hProgress,PBM_SETMARQUEE,1,30); SetTimer(hMain,2,30,nullptr); }
+    if(b){ SendMessage(hProgress,PBM_SETMARQUEE,1,30); SetTimer(hMain,2,30,nullptr); KillTimer(hMain,5); }
     else { SendMessage(hProgress,PBM_SETMARQUEE,0,0); KillTimer(hMain,2); }
 }
 
 // Threads
 void DoCheck(){
     PostMessage(hMain, WM_APP+3, 0, 0); // loading UI on UI thread (never touch HWND from worker)
+    std::wstring ver = RunWinget(L"--version");
+    Trim(ver);
     std::wstring out = RunWinget(L"upgrade --accept-source-agreements");
     auto pkgs = ParseWingetOutput(out);
     // UI thread
     PostMessage(hMain, WM_APP+1, (WPARAM)new std::vector<Package>(pkgs), 0);
+    if (ver.empty())
+        PostMessage(hMain, WM_APP+7, 0, (LPARAM)new std::wstring(L"winget not found — install App Installer from the Microsoft Store."));
 }
 // ---- Elevated upgrade with live progress ----
 // winget needs admin for most upgrades: launch elevated via ShellExecuteEx "runas"
 // writing to a temp log, then tail that log for live stage/percent updates.
-static std::wstring LogPathFor(const std::wstring& id) {
+// Unpredictable per-run log name: a fixed %TEMP% name would let another local
+// user pre-plant a symlink and redirect the ELEVATED winget output anywhere.
+static std::wstring LogPathFor() {
     wchar_t tmp[MAX_PATH]; GetTempPathW(MAX_PATH, tmp);
-    std::wstring safe;
+    ULONGLONG r = ((ULONGLONG)GetCurrentProcessId() << 32) ^ GetTickCount64() ^ ((ULONGLONG)rand() << 48);
+    static volatile LONG ctr = 0;
+    r ^= (ULONGLONG)InterlockedIncrement(&ctr) * 0x9E3779B97F4A7C15ULL;
+    wchar_t rnd[32];
+    swprintf_s(rnd, L"%016llX", r);
+    return std::wstring(tmp) + L"veyo-updater-" + rnd + L".log";
+}
+
+// Strict allowlist for winget package ids: the id reaches an elevated
+// `cmd /c winget ...` line, so anything outside [A-Za-z0-9._-] is refused.
+static bool IsValidPackageId(const std::wstring& id) {
+    if (id.empty() || id.size() > 128) return false;
     for (auto c : id) {
-        if ((c >= L'0' && c <= L'9') || (c >= L'A' && c <= L'Z') || (c >= L'a' && c <= L'z') || c == L'.' || c == L'_' || c == L'-') safe += c;
-        else safe += L'_';
+        if (!((c >= L'0' && c <= L'9') || (c >= L'A' && c <= L'Z') || (c >= L'a' && c <= L'z') || c == L'.' || c == L'_' || c == L'-')) return false;
     }
-    if (safe.empty()) safe = L"all";
-    return std::wstring(tmp) + L"veyo-updater-" + safe + L".log";
+    return true;
 }
 
 static bool LaunchElevated(const std::wstring& wingetArgs, const std::wstring& logPath, HANDLE& hProc) {
@@ -424,7 +441,11 @@ static bool TailLogFile(HANDLE hProc, const std::wstring& logPath) {
 }
 
 static bool DoOneUpgrade(const std::wstring& id, const std::wstring& name, std::wstring& err) {
-    std::wstring log = LogPathFor(id == L"ALL" ? L"all" : id);
+    if (id != L"ALL" && !IsValidPackageId(id)) {
+        err = L"Refused to upgrade \"" + name + L"\": unexpected package id.";
+        return false;
+    }
+    std::wstring log = LogPathFor();
     DeleteFileW(log.c_str());
     std::wstring args;
     if (id == L"ALL") args = L"upgrade --all --silent --accept-package-agreements --accept-source-agreements --disable-interactivity";
@@ -536,7 +557,7 @@ static COLORREF BlendC(COLORREF a, COLORREF b, float t) {
 // Command-button hover/press fade driver
 static LRESULT CALLBACK BtnSubclass(HWND h, UINT m, WPARAM w, LPARAM l, UINT_PTR id, DWORD_PTR) {
     int idx = (int)id - 10;
-    if (idx >= 0 && idx < 3) {
+    if (idx >= 0 && idx < 4) {
         if (m == WM_MOUSEMOVE) {
             if (IsWindowEnabled(h) && g_btns[idx].target < 1.0f) { g_btns[idx].target = 1.0f; StartAnimTimer(); }
             TRACKMOUSEEVENT tme{ sizeof(tme), TME_LEAVE, h, 0 };
@@ -667,6 +688,114 @@ static void FitLastColumn() {
     }
 }
 
+// ---- Portable settings (VeyoUpdater.ini next to the exe) ----
+struct AppSettings {
+    bool autoUpdate = false;  // start updating automatically after countdown
+    int countdownSec = 60;    // download timer, seconds
+    bool autoCheck = false;   // check for updates periodically
+    int checkMinutes = 60;    // auto-check interval, minutes
+    int finishAction = 0;     // 0 nothing, 1 close app, 2 shut down PC
+};
+static AppSettings g_cfg;
+static int g_countdown = 0;
+static bool g_justUpgraded = false;
+
+static std::wstring IniPath() {
+    wchar_t p[MAX_PATH];
+    DWORD n = GetModuleFileNameW(nullptr, p, MAX_PATH);
+    std::wstring s;
+    if (n == 0 || n >= MAX_PATH) {
+        wchar_t t[MAX_PATH]; GetTempPathW(MAX_PATH, t);
+        s = t; // absurdly long exe path fallback: per-user temp dir
+    } else {
+        s = std::wstring(p, n);
+    }
+    size_t d = s.find_last_of(L"\\/");
+    return (d == std::wstring::npos ? s : s.substr(0, d + 1)) + L"VeyoUpdater.ini";
+}
+static void LoadSettings() {
+    std::wstring ini = IniPath();
+    g_cfg.autoUpdate = GetPrivateProfileIntW(L"Timers", L"AutoUpdate", 0, ini.c_str()) != 0;
+    g_cfg.countdownSec = (int)GetPrivateProfileIntW(L"Timers", L"CountdownSec", 60, ini.c_str());
+    g_cfg.autoCheck = GetPrivateProfileIntW(L"Timers", L"AutoCheck", 0, ini.c_str()) != 0;
+    g_cfg.checkMinutes = (int)GetPrivateProfileIntW(L"Timers", L"CheckMinutes", 60, ini.c_str());
+    g_cfg.finishAction = (int)GetPrivateProfileIntW(L"General", L"FinishAction", 0, ini.c_str());
+    if (g_cfg.countdownSec < 5) g_cfg.countdownSec = 5; if (g_cfg.countdownSec > 3600) g_cfg.countdownSec = 3600;
+    if (g_cfg.checkMinutes < 1) g_cfg.checkMinutes = 1; if (g_cfg.checkMinutes > 1440) g_cfg.checkMinutes = 1440;
+    if (g_cfg.finishAction < 0 || g_cfg.finishAction > 2) g_cfg.finishAction = 0;
+}
+static void SaveSettings() {
+    std::wstring ini = IniPath();
+    wchar_t b[32];
+    WritePrivateProfileStringW(L"Timers", L"AutoUpdate", g_cfg.autoUpdate ? L"1" : L"0", ini.c_str());
+    swprintf_s(b, L"%d", g_cfg.countdownSec);
+    WritePrivateProfileStringW(L"Timers", L"CountdownSec", b, ini.c_str());
+    WritePrivateProfileStringW(L"Timers", L"AutoCheck", g_cfg.autoCheck ? L"1" : L"0", ini.c_str());
+    swprintf_s(b, L"%d", g_cfg.checkMinutes);
+    WritePrivateProfileStringW(L"Timers", L"CheckMinutes", b, ini.c_str());
+    swprintf_s(b, L"%d", g_cfg.finishAction);
+    WritePrivateProfileStringW(L"General", L"FinishAction", b, ini.c_str());
+}
+static void ApplyCheckTimer() {
+    if (!hMain) return;
+    KillTimer(hMain, 6);
+    if (g_cfg.autoCheck && g_cfg.checkMinutes > 0)
+        SetTimer(hMain, 6, (UINT)g_cfg.checkMinutes * 60000, nullptr);
+}
+
+static INT_PTR CALLBACK SettingsDlgProc(HWND hDlg, UINT m, WPARAM wParam, LPARAM lParam) {
+    (void)lParam;
+    switch (m) {
+    case WM_INITDIALOG: {
+        CheckDlgButton(hDlg, IDC_CHK_AUTOUPDATE, g_cfg.autoUpdate ? BST_CHECKED : BST_UNCHECKED);
+        SetDlgItemInt(hDlg, IDC_EDT_COUNTDOWN, (UINT)g_cfg.countdownSec, FALSE);
+        CheckDlgButton(hDlg, IDC_CHK_AUTOCHECK, g_cfg.autoCheck ? BST_CHECKED : BST_UNCHECKED);
+        SetDlgItemInt(hDlg, IDC_EDT_INTERVAL, (UINT)g_cfg.checkMinutes, FALSE);
+        SendDlgItemMessageW(hDlg, IDC_CMB_FINISH, CB_ADDSTRING, 0, (LPARAM)L"Do nothing");
+        SendDlgItemMessageW(hDlg, IDC_CMB_FINISH, CB_ADDSTRING, 0, (LPARAM)L"Close the app");
+        SendDlgItemMessageW(hDlg, IDC_CMB_FINISH, CB_ADDSTRING, 0, (LPARAM)L"Shut down the computer");
+        SendDlgItemMessageW(hDlg, IDC_CMB_FINISH, CB_SETCURSEL, (WPARAM)g_cfg.finishAction, 0);
+        EnableWindow(GetDlgItem(hDlg, IDC_EDT_COUNTDOWN), g_cfg.autoUpdate);
+        EnableWindow(GetDlgItem(hDlg, IDC_EDT_INTERVAL), g_cfg.autoCheck);
+        return TRUE;
+    }
+    case WM_COMMAND: {
+        int id = LOWORD(wParam), code = HIWORD(wParam);
+        if ((id == IDC_CHK_AUTOUPDATE || id == IDC_CHK_AUTOCHECK) && code == BN_CLICKED) {
+            bool on = IsDlgButtonChecked(hDlg, id) == BST_CHECKED;
+            EnableWindow(GetDlgItem(hDlg, id == IDC_CHK_AUTOUPDATE ? IDC_EDT_COUNTDOWN : IDC_EDT_INTERVAL), on);
+            return TRUE;
+        }
+        if (id == IDOK) {
+            BOOL ok1 = FALSE, ok2 = FALSE;
+            UINT cd = GetDlgItemInt(hDlg, IDC_EDT_COUNTDOWN, &ok1, FALSE);
+            UINT iv = GetDlgItemInt(hDlg, IDC_EDT_INTERVAL, &ok2, FALSE);
+            if (!ok1) cd = 60; if (!ok2) iv = 60;
+            if (cd < 5) cd = 5; if (cd > 3600) cd = 3600;
+            if (iv < 1) iv = 1; if (iv > 1440) iv = 1440;
+            g_cfg.autoUpdate = IsDlgButtonChecked(hDlg, IDC_CHK_AUTOUPDATE) == BST_CHECKED;
+            g_cfg.countdownSec = (int)cd;
+            g_cfg.autoCheck = IsDlgButtonChecked(hDlg, IDC_CHK_AUTOCHECK) == BST_CHECKED;
+            g_cfg.checkMinutes = (int)iv;
+            int sel = (int)SendDlgItemMessageW(hDlg, IDC_CMB_FINISH, CB_GETCURSEL, 0, 0);
+            g_cfg.finishAction = (sel < 0) ? 0 : (sel > 2 ? 2 : sel);
+            SaveSettings();
+            ApplyCheckTimer();
+            KillTimer(hMain, 5);
+            if (g_cfg.autoUpdate && !g_packages.empty() && !g_loading) {
+                g_countdown = g_cfg.countdownSec;
+                SetTimer(hMain, 5, 1000, nullptr);
+            }
+            EndDialog(hDlg, IDOK);
+            return TRUE;
+        }
+        if (id == IDCANCEL) { EndDialog(hDlg, IDCANCEL); return TRUE; }
+        break;
+    }
+    }
+    return FALSE;
+}
+
 // WndProc
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
     switch(msg){
@@ -699,10 +828,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
         hRefresh = CreateWindowW(L"BUTTON", L"Check for updates", WS_CHILD|WS_VISIBLE|BS_OWNERDRAW, 0,0,0,0, hWnd, (HMENU)1002,nullptr,nullptr);
         hUpgradeSel = CreateWindowW(L"BUTTON", L"Update selected", WS_CHILD|WS_VISIBLE|BS_OWNERDRAW,0,0,0,0,hWnd,(HMENU)1003,nullptr,nullptr);
         hUpgradeAll = CreateWindowW(L"BUTTON", L"Update all", WS_CHILD|WS_VISIBLE|BS_OWNERDRAW,0,0,0,0,hWnd,(HMENU)1004,nullptr,nullptr);
-        g_btns[0].hw = hRefresh; g_btns[1].hw = hUpgradeSel; g_btns[2].hw = hUpgradeAll;
+        hSettings = CreateWindowW(L"BUTTON", L"Settings", WS_CHILD|WS_VISIBLE|BS_OWNERDRAW,0,0,0,0,hWnd,(HMENU)1005,nullptr,nullptr);
+        g_btns[0].hw = hRefresh; g_btns[1].hw = hUpgradeSel; g_btns[2].hw = hUpgradeAll; g_btns[3].hw = hSettings;
         SetWindowSubclass(hRefresh, BtnSubclass, 10, 0);
         SetWindowSubclass(hUpgradeSel, BtnSubclass, 11, 0);
         SetWindowSubclass(hUpgradeAll, BtnSubclass, 12, 0);
+        SetWindowSubclass(hSettings, BtnSubclass, 13, 0);
 
         // Progress - thin accent bar like Store (marquee)
         hProgress = CreateWindowW(PROGRESS_CLASSW, L"", WS_CHILD|PBS_MARQUEE|PBS_SMOOTH,0,0,0,0,hWnd,nullptr,nullptr,nullptr);
@@ -753,8 +884,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
         SetTimer(hWnd,1,400,nullptr);
         // Explicit initial layout (AnimateWindow show path may not send WM_SIZE)
         RECT crc; GetClientRect(hWnd, &crc);
-        SendMessage(hWnd, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(crc.right - crc.left, crc.bottom - crc.top));
-        return 0;
+          SendMessage(hWnd, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(crc.right - crc.left, crc.bottom - crc.top));
+          LoadSettings();
+          if (g_cfg.autoCheck) SetTimer(hWnd, 6, (UINT)g_cfg.checkMinutes * 60000, nullptr);
+          return 0;
     }
     case WM_TIMER:
         if(wParam==1){ KillTimer(hWnd,1); if(!g_loading) std::thread(DoCheck).detach(); }
@@ -800,6 +933,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
             }
             if (!active) KillTimer(hWnd, 4);
         }
+        else if(wParam==5){ // auto-update countdown tick (1s)
+            if (g_loading || g_packages.empty()) { KillTimer(hWnd, 5); }
+            else if (--g_countdown <= 0) {
+                KillTimer(hWnd, 5);
+                std::thread(UpgradeAllThread).detach();
+            } else {
+                wchar_t t[128];
+                swprintf_s(t, L"Auto-update in %ds...", g_countdown);
+                SetWindowTextW(hStatus, t);
+            }
+        }
+        else if(wParam==6){ // auto-check interval
+            if(!g_loading) std::thread(DoCheck).detach();
+        }
         return 0;
     case WM_GETMINMAXINFO:{
         LPMINMAXINFO mmi = (LPMINMAXINFO)lParam;
@@ -819,12 +966,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
         const int btnW1 = 150;  // Check for updates
         const int btnW2 = 135;  // Update selected
         const int btnW3 = 120;  // Update all (accent)
+        const int btnW4 = 110;  // Settings (pinned right)
         int x = pad;
         MoveWindow(hRefresh, x, cmdY, btnW1, cmdH, TRUE);
         x += btnW1 + gap;
         MoveWindow(hUpgradeSel, x, cmdY, btnW2, cmdH, TRUE);
         x += btnW2 + gap;
         MoveWindow(hUpgradeAll, x, cmdY, btnW3, cmdH, TRUE);
+        MoveWindow(hSettings, W - pad - btnW4, cmdY, btnW4, cmdH, TRUE);
         // thin progress under command bar
         MoveWindow(hProgress, pad, cmdY + cmdH + 6, W - pad*2, 4, TRUE);
         // Slim bottom status bar like real Windows apps (left status + right count)
@@ -990,6 +1139,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
     }
     case WM_COMMAND:{
         int id=LOWORD(wParam), code=HIWORD(wParam);
+        if(id==1005){ // settings
+            DialogBoxW(GetModuleHandleW(nullptr), MAKEINTRESOURCEW(IDD_SETTINGS), hWnd, SettingsDlgProc);
+        }
         if(id==1002){ // refresh
             if(!g_loading) std::thread(DoCheck).detach();
         }
@@ -1054,21 +1206,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
         delete pl;
         return 0;
     }
+    case WM_APP+7:{ // fatal status (e.g. winget missing): overrides the status line
+        std::wstring *s = (std::wstring*)lParam;
+        SetLoading(false);
+        SetWindowTextW(hStatus, s->c_str());
+        delete s;
+        return 0;
+    }
     case WM_APP+1:{ // check finished
         auto *pkgs = (std::vector<Package>*)wParam;
         PopulateList(*pkgs);
         SetLoading(false);
         if(pkgs->empty()) SetWindowTextW(hStatus,L"All apps are up to date");
         delete pkgs;
+        if (g_justUpgraded) { g_justUpgraded = false; }
+        else if (g_cfg.autoUpdate && !g_packages.empty() && !g_loading) {
+            g_countdown = g_cfg.countdownSec;
+            SetTimer(hWnd, 5, 1000, nullptr);
+            wchar_t t[128];
+            swprintf_s(t, L"Auto-update in %ds...", g_countdown);
+            SetWindowTextW(hStatus, t);
+        }
         return 0;
     }
     case WM_APP+2:{ // upgrade finished
         bool ok = wParam!=0;
         auto *out = (std::wstring*)lParam;
         SetLoading(false);
-        if(ok) {
+        if(ok && g_cfg.finishAction == 2) {
+            MessageBoxW(hWnd, L"All updates finished.\n\nThe computer will shut down in 60 seconds.\nRun \"shutdown /a\" to abort.", L"Veyo Updater", MB_OK | MB_ICONINFORMATION);
+            ShellExecuteW(hWnd, L"open", L"shutdown.exe", L"/s /t 60 /c \"Veyo Updater finished all updates\"", nullptr, SW_HIDE);
+        } else if(ok && g_cfg.finishAction == 1) {
+            MessageBoxW(hWnd, L"All updates finished. The app will now close.", L"Veyo Updater", MB_OK | MB_ICONINFORMATION);
+            PostMessage(hWnd, WM_CLOSE, 0, 0);
+        } else if(ok) {
             SetWindowTextW(hStatus,L"Update finished. Refreshing...");
             MessageBoxW(hWnd, L"Update completed. Refreshing list.", L"Success", MB_OK);
+            g_justUpgraded = true;
             std::thread(DoCheck).detach();
         } else {
             MessageBoxW(hWnd, out->c_str(), L"Result", MB_OK);
@@ -1086,7 +1260,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
     case WM_DRAWITEM:{
         LPDRAWITEMSTRUCT ds=(LPDRAWITEMSTRUCT)lParam;
         HWND hw = (HWND)ds->hwndItem;
-        if(hw==hUpgradeAll || hw==hRefresh || hw==hUpgradeSel){
+        if(hw==hUpgradeAll || hw==hRefresh || hw==hUpgradeSel || hw==hSettings){
             bool isPrimary = (hw==hUpgradeAll);
             bool pressed = (ds->itemState & ODS_SELECTED);
             bool disabled = (ds->itemState & ODS_DISABLED);
@@ -1176,7 +1350,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
         SelectObject(hdc,hFontTitle);
         SetTextColor(hdc, CLR_TEXT);
         DrawTextW(hdc,L"Veyo Updater",-1,&tR,DT_LEFT|DT_VCENTER|DT_SINGLELINE|DT_END_ELLIPSIS);
-        std::wstring verTxt = L"v1.0";
+        std::wstring verTxt = L"v1.1";
         if (!g_wingetVer.empty()) verTxt += L"  •  winget " + g_wingetVer;
         RECT vR{rc.right - pad - 220, 8, rc.right - pad, 52};
         SelectObject(hdc,hFontSmall);
