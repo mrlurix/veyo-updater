@@ -27,7 +27,7 @@ REM Fallback: direct cl
 where cl >nul 2>&1
 if %errorlevel%==0 (
     echo [MSVC cl] Building single file...
-    call cl /utf-8 /O2 /GL /EHsc /DUNICODE /D_UNICODE src\main.cpp comctl32.lib dwmapi.lib uxtheme.lib /FeVeyoUpdater.exe /link /SUBSYSTEM:WINDOWS /LTCG /OPT:REF /OPT:ICF /INCREMENTAL:NO
+    call cl /utf-8 /MT /O2 /GL /EHsc /DUNICODE /D_UNICODE src\main.cpp comctl32.lib dwmapi.lib uxtheme.lib user32.lib gdi32.lib advapi32.lib shell32.lib /FeVeyoUpdater.exe /link /SUBSYSTEM:WINDOWS /LTCG /OPT:REF /OPT:ICF /INCREMENTAL:NO
     echo ✅ Built: VeyoUpdater.exe
     goto :eof
 )
@@ -36,7 +36,7 @@ REM MinGW fallback
 where g++ >nul 2>&1
 if %errorlevel%==0 (
     echo [MinGW g++] Building...
-    g++ -O2 -std=c++17 src/main.cpp -o VeyoUpdater.exe -municode -mwindows -lcomctl32 -ldwmapi -luxtheme -s
+    g++ -O2 -std=c++17 -static src/main.cpp -o VeyoUpdater.exe -municode -mwindows -lcomctl32 -ldwmapi -luxtheme -ladvapi32 -lshell32 -s
     echo ✅ Built: VeyoUpdater.exe
     goto :eof
 )

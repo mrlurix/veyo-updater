@@ -22,7 +22,8 @@ target_link_libraries(VeyoUpdater PRIVATE
 
 # بهینه‌سازی حجم
 if(MSVC)
-    target_compile_options(VeyoUpdater PRIVATE /utf-8 /O2 /GL /EHsc)
+    # /MT = static CRT: zero prerequisites on any Windows (no VC++ Redist needed)
+    target_compile_options(VeyoUpdater PRIVATE /utf-8 /MT /O2 /GL /EHsc)
     set_target_properties(VeyoUpdater PROPERTIES
         LINK_FLAGS "/LTCG /OPT:REF /OPT:ICF /INCREMENTAL:NO /SUBSYSTEM:WINDOWS"
         INTERPROCEDURAL_OPTIMIZATION TRUE

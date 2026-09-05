@@ -17,7 +17,7 @@ Portable single-file Windows updater powered by `winget`. No installation, no ba
 
 ## Download & Run
 
-Grab `VeyoUpdater.exe` (or `VeyoUpdater_Portable.zip`) from [Releases](../../releases) and run it. Requires Windows 10/11 with `winget` (preinstalled on Windows 11).
+Grab `VeyoUpdater.exe` (or `VeyoUpdater_Portable.zip`) from [Releases](../../releases) and run it. Requires only Windows 10/11 with `winget` (preinstalled on Windows 11) — no VC++ Redistributable, no .NET, no other runtimes: the exe links the C runtime statically (`/MT`) and depends solely on inbox Windows DLLs.
 
 > Updating apps asks for administrator approval (UAC) — that is intentional.
 
@@ -28,7 +28,7 @@ Requires **Visual Studio Build Tools** (MSVC + Windows SDK). Run from the projec
 ```bat
 "%ProgramFiles(x86)%\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
 rc /fo resources\app.res resources\app.rc
-cl /utf-8 /O2 /GL /EHsc /DUNICODE /D_UNICODE /Fe:VeyoUpdater.exe native\src\main.cpp resources\app.res comctl32.lib dwmapi.lib uxtheme.lib user32.lib gdi32.lib advapi32.lib shell32.lib /link /SUBSYSTEM:WINDOWS /LTCG /OPT:REF /OPT:ICF
+cl /utf-8 /MT /O2 /GL /EHsc /DUNICODE /D_UNICODE /Fe:VeyoUpdater.exe native\src\main.cpp resources\app.res comctl32.lib dwmapi.lib uxtheme.lib user32.lib gdi32.lib advapi32.lib shell32.lib /link /SUBSYSTEM:WINDOWS /LTCG /OPT:REF /OPT:ICF
 ```
 
 Alternatives:
