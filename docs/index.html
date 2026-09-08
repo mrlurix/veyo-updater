@@ -3,140 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
 <title>Veyo Updater — Portable winget updater for Windows</title>
 <meta name="description" content="Veyo Updater is a portable single-file winget updater for Windows. No installation, no prerequisites.">
 <meta property="og:title" content="Veyo Updater">
 <meta property="og:description" content="Portable single-file winget updater for Windows.">
 <meta property="og:image" content="https://mrlurix.github.io/veyo-updater/assets/veyo-logo.png">
-<link rel="icon" type="image/png" href="assets/veyo-logo.png">
+<link rel="icon" href="assets/veyo-logo.png">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-
-<div class="navfloat">
-  <nav class="pill">
-    <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo logo">VEYO<span>UPDATER</span></a>
-    <div class="nav-right">
-      <div class="searchbox">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="Search" aria-label="Search docs">
-        <kbd>Ctrl K</kbd>
-        <div id="search-results"></div>
-      </div>
-      <a class="navbtn" href="docs.html">Docs</a>
-      <a class="navbtn gh" href="https://github.com/mrlurix/veyo-updater">GitHub &#8599;</a>
-      <button id="nav-toggle" aria-label="Menu">&#9776;</button>
-    </div>
-  </nav>
-  <div id="mobile-menu">
-    <a href="docs.html">Docs</a>
-    <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
-    <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
-  </div>
-</div>
-
-<header class="hero wrap">
-  <img class="logo" src="assets/veyo-logo.png" alt="Veyo Updater logo">
-  <h1>VEYO <span>UPDATER</span></h1>
-  <p class="tag">Update every app like a pro. One lightweight window, live progress, zero installs — ready in seconds.</p>
-  <div class="cta-row">
-    <a class="btn-red" href="https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip">Download &rarr;</a>
-    <a class="btn-dark" href="https://github.com/mrlurix/veyo-updater">GitHub</a>
-  </div>
-  <div class="cmdbox"><code id="install-cmd">powershell -ExecutionPolicy Bypass -c "iwr https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip -OutFile $env:TEMP\veyo.zip; Expand-Archive $env:TEMP\veyo.zip $env:USERPROFILE\VeyoUpdater -Force; &amp; $env:USERPROFILE\VeyoUpdater\VeyoUpdater.exe"</code><button id="copy-btn">Copy</button></div>
+<header class="topbar">
+  <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo"><b>VEYO<span>UPDATER</span></b></a>
+  <span class="ver">v1.1.0</span>
+  <span class="spacer"></span>
+  <button class="sp-trigger" id="sp-open" aria-label="Search"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Search</span><kbd>Ctrl K</kbd></button>
+  <a class="gh" href="docs.html">Docs</a>
+  <a class="gh" href="https://github.com/mrlurix/veyo-updater" target="_blank" rel="noopener">GitHub ↗</a>
 </header>
 
-<div class="wrap shot" id="shot" style="padding-top:20px">
-  <img src="assets/screenshot.png" alt="Veyo Updater screenshot">
-  <p class="cap">Veyo Updater on Windows 11 — dark theme, live list, per-app Update buttons.</p>
-</div>
+<main class="landing">
+  <!-- HERO -->
+  <section class="hero-xl">
+    <img src="assets/veyo-logo.png" alt="Veyo Updater logo">
+    <h1>VEYO<span>UPDATER</span></h1>
+    <p class="tagline">Update every app like a pro. One lightweight window, live progress,<br>zero installs — ready in seconds.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip">Download →</a>
+      <a class="btn ghost" href="https://github.com/mrlurix/veyo-updater" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <pre class="oneline">powershell -c "iwr https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip -OutFile $env:TEMP\veyo.zip; Expand-Archive $env:TEMP\veyo.zip $env:USERPROFILE\VeyoUpdater -Force; &amp; $env:USERPROFILE\VeyoUpdater\VeyoUpdater.exe"</pre>
+  </section>
 
-<div class="wrap">
-  <div class="band">
-    <div class="pills">
-      <span class="pill">Single EXE</span>
-      <span class="pill">Portable</span>
-      <span class="pill">UAC Safe</span>
-      <span class="pill">Live Progress</span>
-      <span class="pill">Auto Timers</span>
-      <span class="pill">Mica UI</span>
-      <span class="pill">Dark + Light</span>
-      <span class="pill">MIT</span>
+  <!-- BADGES + STATS -->
+  <section class="band">
+    <div class="proto-row">
+      <span class="badge">Single EXE</span><span class="badge">Portable</span><span class="badge">UAC Safe</span><span class="badge">Live Progress</span><span class="badge">Auto Timers</span><span class="badge">Mica UI</span><span class="badge">Dark + Light</span><span class="badge">MIT</span>
     </div>
     <div class="stats">
-      <div class="stat"><div class="v">430 KB</div><div class="l">Single file</div></div>
-      <div class="stat"><div class="v">0</div><div class="l">Prerequisites</div></div>
-      <div class="stat"><div class="v">3</div><div class="l">Update modes</div></div>
-      <div class="stat"><div class="v">MIT</div><div class="l">License</div></div>
+      <div><b>430 KB</b><span>Single file</span></div>
+      <div><b>0</b><span>Prerequisites</span></div>
+      <div><b>3</b><span>Update modes</span></div>
+      <div><b>MIT</b><span>License</span></div>
     </div>
-  </div>
-</div>
+  </section>
 
-<section class="block wrap" id="features">
-  <h2 class="sec">Everything you need to update</h2>
-  <p class="lead">One lightweight window that keeps every winget-tracked app on your PC up to date.</p>
-  <div class="grid">
-    <div class="card">
-      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-      <h3>Smart Check</h3>
-      <p>One click lists every available update with a robust parser that handles long names, BOM and odd spacing.</p>
+  <!-- FEATURES -->
+  <section class="wrap">
+    <h2 id="everything-you-need-to-update">Everything you need to update</h2>
+    <div class="feat-grid">
+      <div class="feat reveal"><b>Smart Check</b><p>One click lists every available update with a robust parser that handles long names, BOM and odd spacing.</p></div>
+      <div class="feat reveal"><b>One-Click Updates</b><p>Every app row has its own Update button — or update a hand-picked selection, or everything at once.</p></div>
+      <div class="feat reveal"><b>Safe Elevation</b><p>Upgrades always run elevated through a UAC prompt. Cancelling shows a clear message — never a silent failure.</p></div>
+      <div class="feat reveal"><b>Live Progress</b><p>Watch the stage (Preparing → Downloading → Installing → Done), a smooth percent bar and a per-app counter.</p></div>
+      <div class="feat reveal"><b>Full Automation</b><p>Set a download countdown, periodic auto-checks, and what happens when finished — even shutting down the PC.</p></div>
+      <div class="feat reveal"><b>Zero Footprint</b><p>A single ~430 KB exe with the C runtime linked statically. No installer, no registry, no VC++ Redist, no .NET.</p></div>
     </div>
-    <div class="card">
-      <div class="ic"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-      <h3>One-Click Updates</h3>
-      <p>Every app row has its own Update button — or update a hand-picked selection, or everything at once.</p>
-    </div>
-    <div class="card">
-      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-      <h3>Safe Elevation</h3>
-      <p>Upgrades always run elevated through a UAC prompt. Cancelling shows a clear message — never a silent failure.</p>
-    </div>
-    <div class="card">
-      <div class="ic"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <h3>Live Progress</h3>
-      <p>Watch the stage (Preparing → Downloading → Installing → Done), a smooth percent bar and a per-app counter.</p>
-    </div>
-    <div class="card">
-      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-      <h3>Full Automation</h3>
-      <p>Set a download countdown, periodic auto-checks, and what happens when finished — even shutting down the PC.</p>
-    </div>
-    <div class="card">
-      <div class="ic"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-      <h3>Zero Footprint</h3>
-      <p>A single ~430 KB exe with the C runtime linked statically. No installer, no registry, no VC++ Redist, no .NET.</p>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section class="block wrap" id="how">
-  <h2 class="sec">Up and running in a minute</h2>
-  <p class="lead">Three steps, no setup.</p>
-  <div class="steps">
-    <div class="step"><div class="n">1</div><h3>Run the exe</h3><p>No setup. It checks for updates automatically on launch.</p></div>
-    <div class="step"><div class="n">2</div><h3>Review the list</h3><p>Store-style rows show each app with its current and new version.</p></div>
-    <div class="step"><div class="n">3</div><h3>Update</h3><p>Approve the UAC prompt once and watch live progress per app.</p></div>
-  </div>
-</section>
+  <!-- SCREENSHOT -->
+  <section class="wrap">
+    <h2 id="take-a-look">Take a look</h2>
+    <div class="shots">
+      <figure><img src="assets/screenshot.png" alt="Veyo Updater on Windows 11" loading="lazy"><figcaption>Veyo Updater on Windows 11 — dark theme, live list, per-app Update buttons</figcaption></figure>
+    </div>
+  </section>
 
-<div class="wrap">
-  <div class="cta">
-    <h2>Keep every app up to date.</h2>
-    <p>Free and open source (MIT). Windows 10 / 11, 64-bit.</p>
-    <a class="btn-red" href="https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip">Download Veyo Updater</a>
-  </div>
-</div>
+  <!-- HOW IT WORKS -->
+  <section class="wrap">
+    <h2 id="up-and-running-in-a-minute">Up and running in a minute</h2>
+    <div class="steps">
+      <div class="step reveal"><b>1</b><p>Run the exe — no setup, it checks for updates on launch</p></div>
+      <div class="step reveal"><b>2</b><p>Review Store-style rows with current and new versions</p></div>
+      <div class="step reveal"><b>3</b><p>Approve the UAC prompt and watch live progress</p></div>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="docs.html">Read the docs →</a>
+      <a class="btn ghost" href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
+    </div>
+  </section>
+</main>
 
-<footer>
-  <div class="wrap">
-    <span>Veyo Updater — MIT License</span>
-    <span class="sp"></span>
-    <a href="docs.html">Docs</a>
-    <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
-    <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
-  </div>
-</footer>
-
+<footer>Veyo Updater · MIT License · <a href="https://github.com/mrlurix/veyo-updater">github.com/mrlurix/veyo-updater</a></footer>
 <script src="assets/app.js"></script>
 </body>
 </html>

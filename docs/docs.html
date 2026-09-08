@@ -3,56 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
 <title>Docs — Veyo Updater</title>
 <meta name="description" content="Full documentation for Veyo Updater: usage, settings, automation, building from source, troubleshooting.">
-<link rel="icon" type="image/png" href="assets/veyo-logo.png">
+<link rel="icon" href="assets/veyo-logo.png">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
+<header class="topbar">
+  <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo"><b>VEYO<span>UPDATER</span></b></a>
+  <span class="ver">v1.1.0</span>
+  <span class="spacer"></span>
+  <button class="sp-trigger" id="sp-open" aria-label="Search"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Search</span><kbd>Ctrl K</kbd></button>
+  <a class="gh" href="docs.html">Docs</a>
+  <a class="gh" href="https://github.com/mrlurix/veyo-updater" target="_blank" rel="noopener">GitHub ↗</a>
+  <button id="nav-toggle" aria-label="Menu">☰</button>
+</header>
 
-<div class="navfloat">
-  <nav class="pill">
-    <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo logo">VEYO<span>UPDATER</span></a>
-    <div class="nav-right">
-      <div class="searchbox">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="Search" aria-label="Search docs">
-        <kbd>Ctrl K</kbd>
-        <div id="search-results"></div>
-      </div>
-      <a class="navbtn active" href="docs.html">Docs</a>
-      <a class="navbtn gh" href="https://github.com/mrlurix/veyo-updater">GitHub &#8599;</a>
-      <button id="nav-toggle" aria-label="Menu">&#9776;</button>
-    </div>
-  </nav>
-  <div id="mobile-menu">
-    <a href="docs.html">Docs</a>
-    <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <input id="side-filter" type="text" placeholder="Filter…" aria-label="Filter sections">
+    <div class="nav-group">Guide</div>
+    <a href="#start">Getting started</a>
+    <a href="#updating">Updating apps</a>
+    <a href="#progress">Live progress</a>
+    <a href="#settings">Settings reference</a>
+    <a href="#automation">Automation examples</a>
+    <div class="nav-group">Reference</div>
+    <a href="#build">Building from source</a>
+    <a href="#trouble">Troubleshooting</a>
+    <a href="#changelog">Changelog</a>
+    <a href="#license">License</a>
+    <div class="nav-group">Project</div>
+    <a href="index.html">Home</a>
     <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
-  </div>
-</div>
-
-<div class="wrap doc-layout">
-  <aside class="side">
-    <div class="side-title">Documentation</div>
-    <a class="slink" href="#start">Getting started</a>
-    <a class="slink" href="#updating">Updating apps</a>
-    <a class="slink" href="#progress">Live progress</a>
-    <a class="slink" href="#settings">Settings reference</a>
-    <a class="slink" href="#automation">Automation examples</a>
-    <a class="slink" href="#build">Building from source</a>
-    <a class="slink" href="#trouble">Troubleshooting</a>
-    <a class="slink" href="#changelog">Changelog</a>
-    <a class="slink" href="#license">License</a>
-    <div class="side-title">Project</div>
-    <a class="slink" href="index.html">Home</a>
-    <a class="slink" href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
-    <a class="slink" href="https://github.com/mrlurix/veyo-updater">GitHub</a>
+    <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
   </aside>
 
-  <article class="doc">
+  <main class="content">
     <h1>Documentation</h1>
-    <p class="sub">Everything Veyo Updater can do, in one place.</p>
+    <p class="subtitle">Everything Veyo Updater can do, in one place.</p>
 
     <h2 id="start">Getting started</h2>
     <ol>
@@ -69,7 +60,7 @@
       <li><strong>Update selected</strong> — upgrades only the checked rows, one after another.</li>
       <li><strong>Update all</strong> — upgrades everything in one elevated <code>winget upgrade --all</code> run.</li>
     </ul>
-    <div class="note">Every upgrade runs <strong>elevated</strong>: Windows shows a UAC prompt first. If you cancel it, the app tells you admin approval is required instead of failing silently.</div>
+    <div class="callout info">Every upgrade runs <strong>elevated</strong>: Windows shows a UAC prompt first. If you cancel it, the app tells you admin approval is required instead of failing silently.</div>
 
     <h2 id="progress">Live progress</h2>
     <p>While upgrading, the status line and the bar under the buttons show:</p>
@@ -101,6 +92,7 @@ FinishAction=0</code></pre>
       <li><strong>Overnight updates:</strong> enable the countdown (e.g. 120 s) and set <em>Shut down the computer</em> — start the app before bed and wake up fully updated.</li>
       <li><strong>Always fresh:</strong> enable auto-check every 120 minutes and leave the app minimized.</li>
     </ul>
+    <div class="callout warn">Overnight shutdown uses a 60-second timer so you can abort it with <code>shutdown /a</code>.</div>
 
     <h2 id="build">Building from source</h2>
     <p>You need <strong>Visual Studio Build Tools</strong> (MSVC + Windows SDK). From the project root:</p>
@@ -126,19 +118,10 @@ cl /utf-8 /MT /O2 /GL /EHsc /DUNICODE /D_UNICODE /Fe:VeyoUpdater.exe native\src\
 
     <h2 id="license">License</h2>
     <p>MIT — see the <a href="https://github.com/mrlurix/veyo-updater/blob/main/LICENSE">LICENSE</a> file. Free for personal and commercial use.</p>
-  </article>
+  </main>
 </div>
 
-<footer>
-  <div class="wrap">
-    <span>Veyo Updater — MIT License</span>
-    <span class="sp"></span>
-    <a href="index.html">Home</a>
-    <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
-    <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
-  </div>
-</footer>
-
+<footer>Veyo Updater · MIT License · <a href="https://github.com/mrlurix/veyo-updater">github.com/mrlurix/veyo-updater</a></footer>
 <script src="assets/app.js"></script>
 </body>
 </html>
