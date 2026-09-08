@@ -48,12 +48,7 @@
     var panel = box.querySelector("#search-results") || box.querySelector(".sr-panel");
     if (!input || !panel) return;
     function close() { panel.classList.remove("open"); panel.innerHTML = ""; }
-    input.addEventListener("input", function () {
-      var q = input.value.trim().toLowerCase();
-      if (q.length < 2) { close(); return; }
-      var hits = INDEX.filter(function (e) {
-        return (e.t + " " + e.d + " " + e.k).toLowerCase().indexOf(q) !== -1;
-      }).slice(0, 7);
+    function renderList(hits) {
       if (!hits.length) { panel.innerHTML = '<div class="sr-empty">No results</div>'; panel.classList.add("open"); return; }
       panel.innerHTML = hits.map(function (e, i) {
         return '<a class="sr-item" data-i="' + i + '" href="' + e.u + '"><b>' + e.t + '</b><span>' + e.d + '</span></a>';
@@ -65,6 +60,18 @@
           el.addEventListener("mousedown", function (ev) { ev.preventDefault(); window.location.href = entry.u; });
         })(links[j], hits[j]);
       }
+    }
+    input.addEventListener("input", function () {
+      var q = input.value.trim().toLowerCase();
+      if (q.length < 2) { close(); return; }
+      var hits = INDEX.filter(function (e) {
+        return (e.t + " " + e.d + " " + e.k).toLowerCase().indexOf(q) !== -1;
+      }).slice(0, 7);
+      renderList(hits);
+    });
+    // focusing (click or Ctrl+K) opens the full menu
+    input.addEventListener("focus", function () {
+      if (!input.value.trim()) renderList(INDEX);
     });
     input.addEventListener("keydown", function (ev) {
       if (ev.key === "Enter") {

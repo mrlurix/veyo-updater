@@ -1,5 +1,7 @@
 # Veyo Updater
 
+> **Website (Home + Docs): https://mrlurix.github.io/veyo-updater/**
+
 Portable single-file Windows updater powered by `winget`. No installation, no background services — one ~430 KB exe.
 
 ![Veyo Updater](screenshot.png)
