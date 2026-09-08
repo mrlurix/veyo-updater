@@ -13,36 +13,62 @@
 </head>
 <body>
 
-<nav>
-  <div class="wrap nav-inner">
-    <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo logo">Veyo Updater</a>
-    <div class="nav-links">
-      <a href="index.html" class="active">Home</a>
-      <a href="docs.html">Docs</a>
-      <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
+<div class="navfloat">
+  <nav class="pill">
+    <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo logo">VEYO<span>UPDATER</span></a>
+    <div class="nav-right">
+      <div class="searchbox">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search" aria-label="Search docs">
+        <kbd>Ctrl K</kbd>
+        <div id="search-results"></div>
+      </div>
+      <a class="navbtn" href="docs.html">Docs</a>
+      <a class="navbtn gh" href="https://github.com/mrlurix/veyo-updater">GitHub &#8599;</a>
+      <button id="nav-toggle" aria-label="Menu">&#9776;</button>
     </div>
-    <div class="nav-sp"></div>
-    <a class="btn small" href="https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip">Download</a>
+  </nav>
+  <div id="mobile-menu">
+    <a href="docs.html">Docs</a>
+    <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
+    <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
   </div>
-</nav>
+</div>
 
 <header class="hero wrap">
   <img class="logo" src="assets/veyo-logo.png" alt="Veyo Updater logo">
-  <h1>Veyo <span>Updater</span></h1>
-  <p class="tag">A portable single-file winget updater for Windows. Check, review and update all your apps — no installation, no prerequisites.</p>
-  <div class="cta">
-    <a class="btn" href="https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip">Download for Windows</a>
-    <a class="btn-ghost" href="docs.html">Read the docs</a>
+  <h1>VEYO <span>UPDATER</span></h1>
+  <p class="tag">Update every app like a pro. One lightweight window, live progress, zero installs — ready in seconds.</p>
+  <div class="cta-row">
+    <a class="btn-red" href="https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip">Download &rarr;</a>
+    <a class="btn-dark" href="https://github.com/mrlurix/veyo-updater">GitHub</a>
   </div>
-  <p class="meta"><b>v1.1.0</b> &nbsp;•&nbsp; ~430 KB single exe &nbsp;•&nbsp; MIT licensed</p>
+  <div class="cmdbox"><code id="install-cmd">powershell -ExecutionPolicy Bypass -c "iwr https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip -OutFile $env:TEMP\veyo.zip; Expand-Archive $env:TEMP\veyo.zip $env:USERPROFILE\VeyoUpdater -Force; &amp; $env:USERPROFILE\VeyoUpdater\VeyoUpdater.exe"</code><button id="copy-btn">Copy</button></div>
 </header>
 
-<div class="wrap shot">
-  <img src="assets/screenshot.png" alt="Veyo Updater screenshot">
+<div class="wrap">
+  <div class="band">
+    <div class="pills">
+      <span class="pill">Single EXE</span>
+      <span class="pill">Portable</span>
+      <span class="pill">UAC Safe</span>
+      <span class="pill">Live Progress</span>
+      <span class="pill">Auto Timers</span>
+      <span class="pill">Mica UI</span>
+      <span class="pill">Dark + Light</span>
+      <span class="pill">MIT</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">430 KB</div><div class="l">Single file</div></div>
+      <div class="stat"><div class="v">0</div><div class="l">Prerequisites</div></div>
+      <div class="stat"><div class="v">3</div><div class="l">Update modes</div></div>
+      <div class="stat"><div class="v">MIT</div><div class="l">License</div></div>
+    </div>
+  </div>
 </div>
 
-<section class="block wrap">
-  <h2 class="sec">Everything you need, nothing you don't</h2>
+<section class="block wrap" id="features">
+  <h2 class="sec">Everything you need to update</h2>
   <p class="lead">One lightweight window that keeps every winget-tracked app on your PC up to date.</p>
   <div class="grid">
     <div class="card">
@@ -78,9 +104,9 @@
   </div>
 </section>
 
-<section class="block wrap">
-  <h2 class="sec">How it works</h2>
-  <p class="lead">Three steps, under a minute.</p>
+<section class="block wrap" id="how">
+  <h2 class="sec">Up and running in a minute</h2>
+  <p class="lead">Three steps, no setup.</p>
   <div class="steps">
     <div class="step"><div class="n">1</div><h3>Run the exe</h3><p>No setup. It checks for updates automatically on launch.</p></div>
     <div class="step"><div class="n">2</div><h3>Review the list</h3><p>Store-style rows show each app with its current and new version.</p></div>
@@ -88,11 +114,16 @@
   </div>
 </section>
 
+<div class="wrap shot" id="shot" style="padding-top:64px">
+  <img src="assets/screenshot.png" alt="Veyo Updater screenshot">
+  <p class="cap">Veyo Updater on Windows 11 — dark theme, live list, per-app Update buttons.</p>
+</div>
+
 <div class="wrap">
   <div class="cta">
     <h2>Keep every app up to date.</h2>
     <p>Free and open source (MIT). Windows 10 / 11, 64-bit.</p>
-    <a class="btn" href="https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip">Download Veyo Updater</a>
+    <a class="btn-red" href="https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip">Download Veyo Updater</a>
   </div>
 </div>
 
@@ -106,5 +137,6 @@
   </div>
 </footer>
 
+<script src="assets/app.js"></script>
 </body>
 </html>

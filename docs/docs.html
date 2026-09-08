@@ -10,75 +10,85 @@
 </head>
 <body>
 
-<nav>
-  <div class="wrap nav-inner">
-    <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo logo">Veyo Updater</a>
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="docs.html" class="active">Docs</a>
-      <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
+<div class="navfloat">
+  <nav class="pill">
+    <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo logo">VEYO<span>UPDATER</span></a>
+    <div class="nav-right">
+      <div class="searchbox">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search" aria-label="Search docs">
+        <kbd>Ctrl K</kbd>
+        <div id="search-results"></div>
+      </div>
+      <a class="navbtn active" href="docs.html">Docs</a>
+      <a class="navbtn gh" href="https://github.com/mrlurix/veyo-updater">GitHub &#8599;</a>
+      <button id="nav-toggle" aria-label="Menu">&#9776;</button>
     </div>
-    <div class="nav-sp"></div>
-    <a class="btn small" href="https://github.com/mrlurix/veyo-updater/releases/latest/download/VeyoUpdater_Portable.zip">Download</a>
+  </nav>
+  <div id="mobile-menu">
+    <a href="docs.html">Docs</a>
+    <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
+    <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
   </div>
-</nav>
+</div>
 
-<div class="wrap doc">
-  <div class="doc-head">
+<div class="wrap doc-layout">
+  <aside class="side">
+    <div class="side-title">Documentation</div>
+    <a class="slink" href="#start">Getting started</a>
+    <a class="slink" href="#updating">Updating apps</a>
+    <a class="slink" href="#progress">Live progress</a>
+    <a class="slink" href="#settings">Settings reference</a>
+    <a class="slink" href="#automation">Automation examples</a>
+    <a class="slink" href="#build">Building from source</a>
+    <a class="slink" href="#trouble">Troubleshooting</a>
+    <a class="slink" href="#changelog">Changelog</a>
+    <a class="slink" href="#license">License</a>
+    <div class="side-title">Project</div>
+    <a class="slink" href="index.html">Home</a>
+    <a class="slink" href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
+    <a class="slink" href="https://github.com/mrlurix/veyo-updater">GitHub</a>
+  </aside>
+
+  <article class="doc">
     <h1>Documentation</h1>
-    <p>Everything Veyo Updater can do, in one place.</p>
-  </div>
+    <p class="sub">Everything Veyo Updater can do, in one place.</p>
 
-  <div class="toc">
-    <strong>On this page</strong>
+    <h2 id="start">Getting started</h2>
+    <ol>
+      <li>Download <code>VeyoUpdater_Portable.zip</code> from the <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a> page and extract it anywhere — or run the one-line install from the <a href="index.html">home page</a>.</li>
+      <li>Run <code>VeyoUpdater.exe</code>. No installation, no admin rights needed to start.</li>
+      <li>The app checks for updates automatically and lists everything with an upgrade available.</li>
+    </ol>
+    <p>Requirements: Windows 10 / 11 (64-bit) with <code>winget</code> — preinstalled on Windows 11, otherwise update <em>App Installer</em> from the Microsoft Store. No VC++ Redistributable, no .NET, no other runtimes.</p>
+
+    <h2 id="updating">Updating apps</h2>
     <ul>
-      <li><a href="#start">Getting started</a></li>
-      <li><a href="#updating">Updating apps</a></li>
-      <li><a href="#progress">Live progress</a></li>
-      <li><a href="#settings">Settings reference</a></li>
-      <li><a href="#automation">Automation examples</a></li>
-      <li><a href="#build">Building from source</a></li>
-      <li><a href="#trouble">Troubleshooting</a></li>
-      <li><a href="#changelog">Changelog</a></li>
-      <li><a href="#license">License</a></li>
+      <li><strong>Check for updates</strong> — re-scans manually at any time.</li>
+      <li><strong>Per-app Update button</strong> — every row has its own button for a single upgrade.</li>
+      <li><strong>Update selected</strong> — upgrades only the checked rows, one after another.</li>
+      <li><strong>Update all</strong> — upgrades everything in one elevated <code>winget upgrade --all</code> run.</li>
     </ul>
-  </div>
+    <div class="note">Every upgrade runs <strong>elevated</strong>: Windows shows a UAC prompt first. If you cancel it, the app tells you admin approval is required instead of failing silently.</div>
 
-  <h2 id="start">Getting started</h2>
-  <ol>
-    <li>Download <code>VeyoUpdater_Portable.zip</code> from the <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a> page and extract it anywhere.</li>
-    <li>Run <code>VeyoUpdater.exe</code>. No installation, no admin rights needed to start.</li>
-    <li>The app checks for updates automatically and lists everything with an upgrade available.</li>
-  </ol>
-  <p>Requirements: Windows 10 / 11 (64-bit) with <code>winget</code> — preinstalled on Windows 11, otherwise update <em>App Installer</em> from the Microsoft Store. No VC++ Redistributable, no .NET, no other runtimes.</p>
+    <h2 id="progress">Live progress</h2>
+    <p>While upgrading, the status line and the bar under the buttons show:</p>
+    <ul>
+      <li>The app currently being updated and its <strong>stage</strong>: <code>Preparing → Downloading → Installing → Done</code>.</li>
+      <li>A smooth <strong>percent bar</strong> parsed live from winget's <code>x MB / y MB</code> output.</li>
+      <li>A <strong>counter</strong> such as <code>45% (3/19)</code> during batch updates.</li>
+    </ul>
 
-  <h2 id="updating">Updating apps</h2>
-  <ul>
-    <li><strong>Check for updates</strong> — re-scans manually at any time.</li>
-    <li><strong>Per-app Update button</strong> — every row has its own button for a single upgrade.</li>
-    <li><strong>Update selected</strong> — upgrades only the checked rows, one after another.</li>
-    <li><strong>Update all</strong> — upgrades everything in one elevated <code>winget upgrade --all</code> run.</li>
-  </ul>
-  <div class="note">Every upgrade runs <strong>elevated</strong>: Windows shows a UAC prompt first. If you cancel it, the app tells you admin approval is required instead of failing silently.</div>
-
-  <h2 id="progress">Live progress</h2>
-  <p>While upgrading, the status line and the bar under the buttons show:</p>
-  <ul>
-    <li>The app currently being updated and its <strong>stage</strong>: <code>Preparing → Downloading → Installing → Done</code>.</li>
-    <li>A smooth <strong>percent bar</strong> parsed live from winget's <code>x MB / y MB</code> output.</li>
-    <li>A <strong>counter</strong> such as <code>45% (3/19)</code> during batch updates.</li>
-  </ul>
-
-  <h2 id="settings">Settings reference</h2>
-  <p>Open <strong>Settings</strong> (top-right button). Everything is stored portably in <code>VeyoUpdater.ini</code> next to the exe — no registry writes.</p>
-  <table>
-    <tr><th>Option</th><th>Values</th><th>What it does</th></tr>
-    <tr><td>Start updating automatically after countdown</td><td>on/off + seconds (5–3600)</td><td>After a check finds updates, a countdown starts in the status line, then updating begins by itself.</td></tr>
-    <tr><td>Check for updates automatically every</td><td>on/off + minutes (1–1440)</td><td>Re-scans in the background on a schedule (skipped while an upgrade is running).</td></tr>
-    <tr><td>After all updates finish</td><td>Do nothing / Close the app / Shut down the computer</td><td>Runs only on success. Shutdown uses a 60-second timer — run <code>shutdown /a</code> to abort it.</td></tr>
-  </table>
-  <p>Example <code>VeyoUpdater.ini</code>:</p>
-  <pre><code>[Timers]
+    <h2 id="settings">Settings reference</h2>
+    <p>Open <strong>Settings</strong> (top-right button). Everything is stored portably in <code>VeyoUpdater.ini</code> next to the exe — no registry writes.</p>
+    <table>
+      <tr><th>Option</th><th>Values</th><th>What it does</th></tr>
+      <tr><td>Start updating automatically after countdown</td><td>on/off + seconds (5–3600)</td><td>After a check finds updates, a countdown starts in the status line, then updating begins by itself.</td></tr>
+      <tr><td>Check for updates automatically every</td><td>on/off + minutes (1–1440)</td><td>Re-scans in the background on a schedule (skipped while an upgrade is running).</td></tr>
+      <tr><td>After all updates finish</td><td>Do nothing / Close the app / Shut down the computer</td><td>Runs only on success. Shutdown uses a 60-second timer — run <code>shutdown /a</code> to abort it.</td></tr>
+    </table>
+    <p>Example <code>VeyoUpdater.ini</code>:</p>
+    <pre><code>[Timers]
 AutoUpdate=1
 CountdownSec=60
 AutoCheck=1
@@ -86,37 +96,37 @@ CheckMinutes=120
 [General]
 FinishAction=0</code></pre>
 
-  <h2 id="automation">Automation examples</h2>
-  <ul>
-    <li><strong>Overnight updates:</strong> enable the countdown (e.g. 120 s) and set <em>Shut down the computer</em> — start the app before bed and wake up fully updated.</li>
-    <li><strong>Always fresh:</strong> enable auto-check every 120 minutes and leave the app minimized.</li>
-  </ul>
+    <h2 id="automation">Automation examples</h2>
+    <ul>
+      <li><strong>Overnight updates:</strong> enable the countdown (e.g. 120 s) and set <em>Shut down the computer</em> — start the app before bed and wake up fully updated.</li>
+      <li><strong>Always fresh:</strong> enable auto-check every 120 minutes and leave the app minimized.</li>
+    </ul>
 
-  <h2 id="build">Building from source</h2>
-  <p>You need <strong>Visual Studio Build Tools</strong> (MSVC + Windows SDK). From the project root:</p>
-  <pre><code>"%ProgramFiles(x86)%\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+    <h2 id="build">Building from source</h2>
+    <p>You need <strong>Visual Studio Build Tools</strong> (MSVC + Windows SDK). From the project root:</p>
+    <pre><code>"%ProgramFiles(x86)%\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
 rc /fo resources\app.res resources\app.rc
 cl /utf-8 /MT /O2 /GL /EHsc /DUNICODE /D_UNICODE /Fe:VeyoUpdater.exe native\src\main.cpp resources\app.res comctl32.lib dwmapi.lib uxtheme.lib user32.lib gdi32.lib advapi32.lib shell32.lib /link /SUBSYSTEM:WINDOWS /LTCG /OPT:REF /OPT:ICF</code></pre>
-  <p>The <code>/MT</code> flag links the C runtime statically — that is why the exe needs no redistributable. A CMake alternative lives in <code>native/</code> (see <code>native/build.bat</code>), and an experimental Qt 6 UI in <code>src/</code>.</p>
+    <p>The <code>/MT</code> flag links the C runtime statically — that is why the exe needs no redistributable. A CMake alternative lives in <code>native/</code> (see <code>native/build.bat</code>), and an experimental Qt 6 UI in <code>src/</code>.</p>
 
-  <h2 id="trouble">Troubleshooting</h2>
-  <table>
-    <tr><th>Problem</th><th>Fix</th></tr>
-    <tr><td>“winget not found”</td><td>Update <em>App Installer</em> from the Microsoft Store, then run <code>winget --version</code>.</td></tr>
-    <tr><td>No updates listed but you expect some</td><td>Try <code>winget upgrade --include-unknown</code> — some packages report no version.</td></tr>
-    <tr><td>UAC cancelled</td><td>Nothing was changed. Approve the prompt to let the update proceed.</td></tr>
-    <tr><td>An update failed</td><td>The error message includes the log path (<code>%TEMP%\veyo-updater-*.log</code>).</td></tr>
-  </table>
+    <h2 id="trouble">Troubleshooting</h2>
+    <table>
+      <tr><th>Problem</th><th>Fix</th></tr>
+      <tr><td>“winget not found”</td><td>Update <em>App Installer</em> from the Microsoft Store, then run <code>winget --version</code>.</td></tr>
+      <tr><td>No updates listed but you expect some</td><td>Try <code>winget upgrade --include-unknown</code> — some packages report no version.</td></tr>
+      <tr><td>UAC cancelled</td><td>Nothing was changed. Approve the prompt to let the update proceed.</td></tr>
+      <tr><td>An update failed</td><td>The error message includes the log path (<code>%TEMP%\veyo-updater-*.log</code>).</td></tr>
+    </table>
 
-  <h2 id="changelog">Changelog</h2>
-  <ul>
-    <li><strong>v1.1.0</strong> — Settings (timers, auto-shutdown), security hardening (unpredictable log names, package-id allowlist).</li>
-    <li><strong>v1.0.0</strong> — Initial release: Store-style list, batch updates, elevated upgrades, live progress, animations.</li>
-  </ul>
+    <h2 id="changelog">Changelog</h2>
+    <ul>
+      <li><strong>v1.1.0</strong> — Settings (timers, auto-shutdown), security hardening (unpredictable log names, package-id allowlist).</li>
+      <li><strong>v1.0.0</strong> — Initial release: Store-style list, batch updates, elevated upgrades, live progress, animations.</li>
+    </ul>
 
-  <h2 id="license">License</h2>
-  <p>MIT — see the <a href="https://github.com/mrlurix/veyo-updater/blob/main/LICENSE">LICENSE</a> file. Free for personal and commercial use.</p>
-  <div style="height: 48px"></div>
+    <h2 id="license">License</h2>
+    <p>MIT — see the <a href="https://github.com/mrlurix/veyo-updater/blob/main/LICENSE">LICENSE</a> file. Free for personal and commercial use.</p>
+  </article>
 </div>
 
 <footer>
@@ -129,5 +139,6 @@ cl /utf-8 /MT /O2 /GL /EHsc /DUNICODE /D_UNICODE /Fe:VeyoUpdater.exe native\src\
   </div>
 </footer>
 
+<script src="assets/app.js"></script>
 </body>
 </html>
