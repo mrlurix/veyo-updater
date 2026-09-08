@@ -170,20 +170,30 @@
     });
   }
 
-  // ---- docs scrollspy ----
+  // ---- docs scrollspy (band pinned near top + instant feedback on click) ----
   var links = Array.prototype.slice.call(document.querySelectorAll(".sidebar a[href^=\"#\"]"));
+  var spyLocked = false, spyTimer = null;
+  function spyActivate(a) {
+    links.forEach(function (x) { x.classList.remove("active"); });
+    if (a) a.classList.add("active");
+  }
+  links.forEach(function (a) {
+    a.addEventListener("click", function () {
+      spyActivate(a);
+      spyLocked = true;
+      if (spyTimer) clearTimeout(spyTimer);
+      spyTimer = setTimeout(function () { spyLocked = false; }, 900);
+    });
+  });
   if (links.length && "IntersectionObserver" in window) {
     var map = {};
     links.forEach(function (a) { map[a.getAttribute("href").slice(1)] = a; });
     var obs = new IntersectionObserver(function (entries) {
+      if (spyLocked) return;
       entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          links.forEach(function (a) { a.classList.remove("active"); });
-          var a = map[e.target.id];
-          if (a) a.classList.add("active");
-        }
+        if (e.isIntersecting) spyActivate(map[e.target.id]);
       });
-    }, { rootMargin: "-30% 0px -60% 0px" });
+    }, { rootMargin: "-96px 0px -75% 0px" });
     Object.keys(map).forEach(function (id) {
       var el = document.getElementById(id);
       if (el) obs.observe(el);
