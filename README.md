@@ -4,6 +4,8 @@ Portable single-file Windows updater powered by `winget`. No installation, no ba
 
 ![Veyo Updater](screenshot.png)
 
+**Website:** https://mrlurix.github.io/veyo-updater/ (Home + full Docs)
+
 ## Features
 
 - **Automatic check** — lists every package with an available `winget upgrade`, using a robust fixed-width table parser (handles long names like `Eclipse Temurin JDK…`, BOM, `\r\n`)
