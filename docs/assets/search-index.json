@@ -1,0 +1,16 @@
+[
+  {"u": "index.html#everything-you-need-to-update", "p": "Home", "s": "Features overview", "t": "Smart check, one-click updates, safe elevation, live progress, automation, zero footprint portable app."},
+  {"u": "index.html#up-and-running-in-a-minute", "s": "How it works", "t": "Run the exe, review the list, approve the UAC prompt. Up and running in a minute."},
+  {"u": "index.html#take-a-look", "s": "Screenshot", "t": "Veyo Updater on Windows 11, dark theme, live list, per-app Update buttons."},
+  {"u": "https://github.com/mrlurix/veyo-updater/releases/latest", "p": "Home", "s": "Download Veyo Updater", "t": "Portable zip and single exe, latest release, free download for Windows."},
+  {"u": "usage.html#start", "p": "Usage", "s": "Getting started", "t": "Download the portable zip, run VeyoUpdater.exe, no install. Requires Windows 10 or 11 with winget."},
+  {"u": "usage.html#updating", "p": "Usage", "s": "Updating apps", "t": "Check for updates, per-app Update button, update selected rows, update all with one elevated winget run. UAC prompt."},
+  {"u": "usage.html#progress", "p": "Usage", "s": "Live progress", "t": "Stage preparing downloading installing done, smooth percent bar from MB values, per-app counter."},
+  {"u": "settings.html#settings", "p": "Settings", "s": "Settings reference", "t": "Download timer countdown seconds, auto-check interval minutes, finish action, portable VeyoUpdater.ini file."},
+  {"u": "settings.html#automation", "p": "Settings", "s": "Automation examples", "t": "Overnight updates with shutdown, always fresh with minimized auto-check."},
+  {"u": "building.html#build", "p": "Building", "s": "Building from source", "t": "Visual Studio Build Tools MSVC, rc resource compiler, cl command with static MT runtime, CMake and MinGW alternatives."},
+  {"u": "help.html#trouble", "p": "Help", "s": "Troubleshooting", "t": "Winget not found, no updates listed, UAC cancelled, failed update log path in temp folder."},
+  {"u": "help.html#changelog", "p": "Help", "s": "Changelog", "t": "Version 1.1.0 settings and security hardening, version 1.0.0 initial release."},
+  {"u": "help.html#license", "p": "Help", "s": "License", "t": "MIT license, free for personal and commercial use."},
+  {"u": "https://github.com/mrlurix/veyo-updater", "p": "GitHub", "s": "Repository", "t": "Source code, issues, releases of Veyo Updater."}
+]

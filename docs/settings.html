@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Settings — Veyo Updater Docs</title>
+<meta name="description" content="Veyo Updater settings: download timer, auto-check interval, finish actions, portable INI.">
+<link rel="icon" href="assets/veyo-logo.png">
+<link rel="stylesheet" href="assets/style.css?v=1">
+</head>
+<body>
+<header class="topbar">
+  <button id="nav-toggle" aria-label="Menu">☰</button>
+  <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo"><b>VEYO<span>UPDATER</span></b></a>
+  <span class="ver">Docs</span>
+  <span class="spacer"></span>
+  <a class="gh" href="https://github.com/mrlurix/veyo-updater" target="_blank" rel="noopener">GitHub ↗</a>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+  <input id="nav-search" type="search" placeholder="Search docs…">
+  <div class="nav-group">Project</div>
+  <a href="index.html">Home</a>
+  <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
+  <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
+  <div class="nav-group">Guide</div>
+  <a href="usage.html">Usage</a>
+  <a href="settings.html">Settings</a>
+  <div class="nav-group">Reference</div>
+  <a href="building.html">Building</a>
+  <a href="help.html">Help</a>
+</nav>
+<main class="content">
+
+<h1><span class="z">S</span>ettings</h1>
+<p class="subtitle">Timers, automation and what happens when updates finish.</p>
+
+<h2 id="settings">Settings reference</h2>
+<p>Open <strong>Settings</strong> (top-right button in the app). Everything is stored portably in <code>VeyoUpdater.ini</code> next to the exe — no registry writes.</p>
+<table>
+<tr><th>Option</th><th>Values</th><th>What it does</th></tr>
+<tr><td>Start updating automatically after countdown</td><td>on/off + seconds (5–3600)</td><td>After a check finds updates, a countdown starts in the status line, then updating begins by itself.</td></tr>
+<tr><td>Check for updates automatically every</td><td>on/off + minutes (1–1440)</td><td>Re-scans in the background on a schedule (skipped while an upgrade is running).</td></tr>
+<tr><td>After all updates finish</td><td>Do nothing / Close the app / Shut down the computer</td><td>Runs only on success. Shutdown uses a 60-second timer — run <code>shutdown /a</code> to abort it.</td></tr>
+</table>
+<p>Example <code>VeyoUpdater.ini</code>:</p>
+<pre><code>[Timers]
+AutoUpdate=1
+CountdownSec=60
+AutoCheck=1
+CheckMinutes=120
+[General]
+FinishAction=0</code></pre>
+
+<h2 id="automation">Automation examples</h2>
+<ul>
+  <li><strong>Overnight updates:</strong> enable the countdown (e.g. 120 s) and set <em>Shut down the computer</em> — start the app before bed and wake up fully updated.</li>
+  <li><strong>Always fresh:</strong> enable auto-check every 120 minutes and leave the app minimized.</li>
+</ul>
+<div class="callout warn">Overnight shutdown uses a 60-second timer so you can abort it with <code>shutdown /a</code>.</div>
+
+</main>
+</div>
+<footer>Veyo Updater · MIT License · <a href="https://github.com/mrlurix/veyo-updater">github.com/mrlurix/veyo-updater</a></footer>
+<script src="assets/docs.js?v=1"></script>
+</body>
+</html>

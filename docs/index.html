@@ -11,15 +11,14 @@
 <meta property="og:description" content="Portable single-file winget updater for Windows.">
 <meta property="og:image" content="https://mrlurix.github.io/veyo-updater/assets/veyo-logo.png">
 <link rel="icon" href="assets/veyo-logo.png">
-<link rel="stylesheet" href="assets/style.css?v=2">
+<link rel="stylesheet" href="assets/style.css?v=1">
 </head>
 <body>
 <header class="topbar">
   <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo"><b>VEYO<span>UPDATER</span></b></a>
   <span class="ver">v1.1.0</span>
   <span class="spacer"></span>
-  <button class="sp-trigger" id="sp-open" aria-label="Search"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Search</span><kbd>Ctrl K</kbd></button>
-  <a class="gh" href="docs.html">Docs</a>
+  <a class="gh" href="usage.html">Docs</a>
   <a class="gh" href="https://github.com/mrlurix/veyo-updater" target="_blank" rel="noopener">GitHub ↗</a>
 </header>
 
@@ -49,24 +48,24 @@
     </div>
   </section>
 
-  <!-- SCREENSHOT -->
-  <section class="wrap">
-    <h2 id="take-a-look">Take a look</h2>
-    <div class="shots">
-      <figure><img src="assets/screenshot.png" alt="Veyo Updater on Windows 11" loading="lazy"><figcaption>Veyo Updater on Windows 11 — dark theme, live list, per-app Update buttons</figcaption></figure>
-    </div>
-  </section>
-
   <!-- FEATURES -->
   <section class="wrap">
     <h2 id="everything-you-need-to-update">Everything you need to update</h2>
     <div class="feat-grid">
-      <div class="feat reveal"><b>Smart Check</b><p>One click lists every available update with a robust parser that handles long names, BOM and odd spacing.</p></div>
-      <div class="feat reveal"><b>One-Click Updates</b><p>Every app row has its own Update button — or update a hand-picked selection, or everything at once.</p></div>
-      <div class="feat reveal"><b>Safe Elevation</b><p>Upgrades always run elevated through a UAC prompt. Cancelling shows a clear message — never a silent failure.</p></div>
-      <div class="feat reveal"><b>Live Progress</b><p>Watch the stage (Preparing → Downloading → Installing → Done), a smooth percent bar and a per-app counter.</p></div>
-      <div class="feat reveal"><b>Full Automation</b><p>Set a download countdown, periodic auto-checks, and what happens when finished — even shutting down the PC.</p></div>
-      <div class="feat reveal"><b>Zero Footprint</b><p>A single ~430 KB exe with the C runtime linked statically. No installer, no registry, no VC++ Redist, no .NET.</p></div>
+      <div class="feat"><b>Smart Check</b><p>One click lists every available update with a robust parser that handles long names, BOM and odd spacing.</p></div>
+      <div class="feat"><b>One-Click Updates</b><p>Every app row has its own Update button — or update a hand-picked selection, or everything at once.</p></div>
+      <div class="feat"><b>Safe Elevation</b><p>Upgrades always run elevated through a UAC prompt. Cancelling shows a clear message — never a silent failure.</p></div>
+      <div class="feat"><b>Live Progress</b><p>Watch the stage (Preparing → Downloading → Installing → Done), a smooth percent bar and a per-app counter.</p></div>
+      <div class="feat"><b>Full Automation</b><p>Set a download countdown, periodic auto-checks, and what happens when finished — even shutting down the PC.</p></div>
+      <div class="feat"><b>Zero Footprint</b><p>A single ~430 KB exe with the C runtime linked statically. No installer, no registry, no VC++ Redist, no .NET.</p></div>
+    </div>
+  </section>
+
+  <!-- SCREENSHOT -->
+  <section class="wrap">
+    <h2 id="take-a-look">Take a look</h2>
+    <div class="shots single">
+      <figure><img src="assets/screenshot.png" alt="Veyo Updater on Windows 11" loading="lazy"><figcaption>Veyo Updater on Windows 11 — dark theme, live list, per-app Update buttons</figcaption></figure>
     </div>
   </section>
 
@@ -74,18 +73,18 @@
   <section class="wrap">
     <h2 id="up-and-running-in-a-minute">Up and running in a minute</h2>
     <div class="steps">
-      <div class="step reveal"><b>1</b><p>Run the exe — no setup, it checks for updates on launch</p></div>
-      <div class="step reveal"><b>2</b><p>Review Store-style rows with current and new versions</p></div>
-      <div class="step reveal"><b>3</b><p>Approve the UAC prompt and watch live progress</p></div>
+      <div class="step"><b>1</b><p>Run the exe — no setup, it checks for updates on launch</p></div>
+      <div class="step"><b>2</b><p>Review Store-style rows with current and new versions</p></div>
+      <div class="step"><b>3</b><p>Approve the UAC prompt and watch live progress</p></div>
     </div>
     <div class="cta">
-      <a class="btn primary" href="docs.html">Read the docs →</a>
+      <a class="btn primary" href="usage.html">Read the docs →</a>
       <a class="btn ghost" href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
     </div>
   </section>
 </main>
 
 <footer>Veyo Updater · MIT License · <a href="https://github.com/mrlurix/veyo-updater">github.com/mrlurix/veyo-updater</a></footer>
-<script src="assets/app.js?v=2"></script>
+<script src="assets/docs.js?v=1"></script>
 </body>
 </html>

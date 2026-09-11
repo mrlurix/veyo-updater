@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Usage — Veyo Updater Docs</title>
+<meta name="description" content="How to use Veyo Updater: getting started, updating apps, live progress.">
+<link rel="icon" href="assets/veyo-logo.png">
+<link rel="stylesheet" href="assets/style.css?v=1">
+</head>
+<body>
+<header class="topbar">
+  <button id="nav-toggle" aria-label="Menu">☰</button>
+  <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo"><b>VEYO<span>UPDATER</span></b></a>
+  <span class="ver">Docs</span>
+  <span class="spacer"></span>
+  <a class="gh" href="https://github.com/mrlurix/veyo-updater" target="_blank" rel="noopener">GitHub ↗</a>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+  <input id="nav-search" type="search" placeholder="Search docs…">
+  <div class="nav-group">Project</div>
+  <a href="index.html">Home</a>
+  <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
+  <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
+  <div class="nav-group">Guide</div>
+  <a href="usage.html">Usage</a>
+  <a href="settings.html">Settings</a>
+  <div class="nav-group">Reference</div>
+  <a href="building.html">Building</a>
+  <a href="help.html">Help</a>
+</nav>
+<main class="content">
+
+<h1><span class="z">U</span>sage</h1>
+<p class="subtitle">Install, update and follow live progress.</p>
+
+<h2 id="start">Getting started</h2>
+<ol>
+  <li>Download <code>VeyoUpdater_Portable.zip</code> from the <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a> page and extract it anywhere — or run the one-line install from the <a href="index.html">home page</a>.</li>
+  <li>Run <code>VeyoUpdater.exe</code>. No installation, no admin rights needed to start.</li>
+  <li>The app checks for updates automatically and lists everything with an upgrade available.</li>
+</ol>
+<p>Requirements: Windows 10 / 11 (64-bit) with <code>winget</code> — preinstalled on Windows 11, otherwise update <em>App Installer</em> from the Microsoft Store. No VC++ Redistributable, no .NET, no other runtimes.</p>
+
+<h2 id="updating">Updating apps</h2>
+<ul>
+  <li><strong>Check for updates</strong> — re-scans manually at any time.</li>
+  <li><strong>Per-app Update button</strong> — every row has its own button for a single upgrade.</li>
+  <li><strong>Update selected</strong> — upgrades only the checked rows, one after another.</li>
+  <li><strong>Update all</strong> — upgrades everything in one elevated <code>winget upgrade --all</code> run.</li>
+</ul>
+<div class="callout info">Every upgrade runs <strong>elevated</strong>: Windows shows a UAC prompt first. If you cancel it, the app tells you admin approval is required instead of failing silently.</div>
+
+<h2 id="progress">Live progress</h2>
+<p>While upgrading, the status line and the bar under the buttons show:</p>
+<ul>
+  <li>The app currently being updated and its <strong>stage</strong>: <code>Preparing → Downloading → Installing → Done</code>.</li>
+  <li>A smooth <strong>percent bar</strong> parsed live from winget's <code>x MB / y MB</code> output.</li>
+  <li>A <strong>counter</strong> such as <code>45% (3/19)</code> during batch updates.</li>
+</ul>
+
+</main>
+</div>
+<footer>Veyo Updater · MIT License · <a href="https://github.com/mrlurix/veyo-updater">github.com/mrlurix/veyo-updater</a></footer>
+<script src="assets/docs.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Help — Veyo Updater Docs</title>
+<meta name="description" content="Veyo Updater troubleshooting, changelog and license.">
+<link rel="icon" href="assets/veyo-logo.png">
+<link rel="stylesheet" href="assets/style.css?v=1">
+</head>
+<body>
+<header class="topbar">
+  <button id="nav-toggle" aria-label="Menu">☰</button>
+  <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo"><b>VEYO<span>UPDATER</span></b></a>
+  <span class="ver">Docs</span>
+  <span class="spacer"></span>
+  <a class="gh" href="https://github.com/mrlurix/veyo-updater" target="_blank" rel="noopener">GitHub ↗</a>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+  <input id="nav-search" type="search" placeholder="Search docs…">
+  <div class="nav-group">Project</div>
+  <a href="index.html">Home</a>
+  <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
+  <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
+  <div class="nav-group">Guide</div>
+  <a href="usage.html">Usage</a>
+  <a href="settings.html">Settings</a>
+  <div class="nav-group">Reference</div>
+  <a href="building.html">Building</a>
+  <a href="help.html">Help</a>
+</nav>
+<main class="content">
+
+<h1><span class="z">H</span>elp</h1>
+<p class="subtitle">Troubleshooting, changelog and license.</p>
+
+<h2 id="trouble">Troubleshooting</h2>
+<table>
+<tr><th>Problem</th><th>Fix</th></tr>
+<tr><td>“winget not found”</td><td>Update <em>App Installer</em> from the Microsoft Store, then run <code>winget --version</code>.</td></tr>
+<tr><td>No updates listed but you expect some</td><td>Try <code>winget upgrade --include-unknown</code> — some packages report no version.</td></tr>
+<tr><td>UAC cancelled</td><td>Nothing was changed. Approve the prompt to let the update proceed.</td></tr>
+<tr><td>An update failed</td><td>The error message includes the log path (<code>%TEMP%\veyo-updater-*.log</code>).</td></tr>
+</table>
+
+<h2 id="changelog">Changelog</h2>
+<ul>
+  <li><strong>v1.1.0</strong> — Settings (timers, auto-shutdown), security hardening (unpredictable log names, package-id allowlist).</li>
+  <li><strong>v1.0.0</strong> — Initial release: Store-style list, batch updates, elevated upgrades, live progress, animations.</li>
+</ul>
+
+<h2 id="license">License</h2>
+<p>MIT — see the <a href="https://github.com/mrlurix/veyo-updater/blob/main/LICENSE">LICENSE</a> file. Free for personal and commercial use.</p>
+
+</main>
+</div>
+<footer>Veyo Updater · MIT License · <a href="https://github.com/mrlurix/veyo-updater">github.com/mrlurix/veyo-updater</a></footer>
+<script src="assets/docs.js?v=1"></script>
+</body>
+</html>

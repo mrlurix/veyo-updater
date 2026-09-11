@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Building — Veyo Updater Docs</title>
+<meta name="description" content="Build Veyo Updater from source with MSVC, CMake or MinGW.">
+<link rel="icon" href="assets/veyo-logo.png">
+<link rel="stylesheet" href="assets/style.css?v=1">
+</head>
+<body>
+<header class="topbar">
+  <button id="nav-toggle" aria-label="Menu">☰</button>
+  <a class="brand" href="index.html"><img src="assets/veyo-logo.png" alt="Veyo"><b>VEYO<span>UPDATER</span></b></a>
+  <span class="ver">Docs</span>
+  <span class="spacer"></span>
+  <a class="gh" href="https://github.com/mrlurix/veyo-updater" target="_blank" rel="noopener">GitHub ↗</a>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+  <input id="nav-search" type="search" placeholder="Search docs…">
+  <div class="nav-group">Project</div>
+  <a href="index.html">Home</a>
+  <a href="https://github.com/mrlurix/veyo-updater/releases">Releases</a>
+  <a href="https://github.com/mrlurix/veyo-updater">GitHub</a>
+  <div class="nav-group">Guide</div>
+  <a href="usage.html">Usage</a>
+  <a href="settings.html">Settings</a>
+  <div class="nav-group">Reference</div>
+  <a href="building.html">Building</a>
+  <a href="help.html">Help</a>
+</nav>
+<main class="content">
+
+<h1><span class="z">B</span>uilding</h1>
+<p class="subtitle">Build Veyo Updater from source.</p>
+
+<h2 id="build">Building from source</h2>
+<p>You need <strong>Visual Studio Build Tools</strong> (MSVC + Windows SDK). From the project root:</p>
+<pre><code>"%ProgramFiles(x86)%\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+rc /fo resources\app.res resources\app.rc
+cl /utf-8 /MT /O2 /GL /EHsc /DUNICODE /D_UNICODE /Fe:VeyoUpdater.exe native\src\main.cpp resources\app.res comctl32.lib dwmapi.lib uxtheme.lib user32.lib gdi32.lib advapi32.lib shell32.lib /link /SUBSYSTEM:WINDOWS /LTCG /OPT:REF /OPT:ICF</code></pre>
+<div class="callout info">The <code>/MT</code> flag links the C runtime statically — that is why the exe needs no redistributable.</div>
+<p>A CMake alternative lives in <code>native/</code> (see <code>native/build.bat</code>), and an experimental Qt 6 UI in <code>src/</code>.</p>
+
+</main>
+</div>
+<footer>Veyo Updater · MIT License · <a href="https://github.com/mrlurix/veyo-updater">github.com/mrlurix/veyo-updater</a></footer>
+<script src="assets/docs.js?v=1"></script>
+</body>
+</html>
